@@ -24,6 +24,10 @@ class Checklist {
     }
   }
 
+  int indexOf(ChecklistItem item) {
+    return _items.indexOf(item);
+  }
+
   void removeItemAtIndex(int index) {
     _items.removeAt(index);
   }

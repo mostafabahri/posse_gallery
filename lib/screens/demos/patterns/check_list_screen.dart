@@ -11,6 +11,7 @@ import 'package:posse_gallery/screens/demos/patterns/check_list_detail.dart';
 
 typedef void ChecklistItemChangedCallback(ChecklistItem checklistItem,
     bool value);
+typedef void ChecklistItemDeletedWithSwipe(ChecklistItem checklistItem);
 
 class ChecklistListItem extends StatelessWidget {
   ChecklistListItem({
@@ -19,6 +20,7 @@ class ChecklistListItem extends StatelessWidget {
     this.checklistItem,
     this.onTap,
     this.onCheckboxChanged,
+    this.onChecklistItemDeletedWithSwipe,
   }) : super(key: key) {
     assert(animation != null);
   }
@@ -27,68 +29,84 @@ class ChecklistListItem extends StatelessWidget {
   final ChecklistItem checklistItem;
   final VoidCallback onTap;
   final ChecklistItemChangedCallback onCheckboxChanged;
-
+  final ChecklistItemDeletedWithSwipe onChecklistItemDeletedWithSwipe;
 
   @override
   Widget build(BuildContext context) {
-    final cellContainer = new SizeTransition(
-      axis: Axis.vertical,
-      sizeFactor: animation,
-      child:
-      new Container(
-        decoration: new BoxDecoration(
-          border: new Border(
-            bottom: new BorderSide(
-              color: const Color(0xFFF4F4F4),
-              width: 1.0,
+    return new Dismissible(
+      key: new ObjectKey(checklistItem),
+      direction: DismissDirection.endToStart,
+      onDismissed: (DismissDirection direction) {
+        onChecklistItemDeletedWithSwipe(checklistItem);
+      },
+      background: new Container(
+        color: new Color(0xFFFF8B00),
+      ),
+      secondaryBackground: new Container(
+          color: new Color(0xFFFF8B00),
+          child: const ListTile(
+              trailing: const Icon(
+                  Icons.delete, color: Colors.white, size: 36.0)
+          )
+      ),
+      child: new SizeTransition(
+        axis: Axis.vertical,
+        sizeFactor: animation,
+        child:
+        new Container(
+          decoration: new BoxDecoration(
+            border: new Border(
+              bottom: new BorderSide(
+                color: const Color(0xFFF4F4F4),
+                width: 1.0,
+              ),
             ),
           ),
-        ),
-        height: 60.0,
-        child: new Stack(
-          children: [
-            new Material(
-              color: const Color(0x00FFFFFF),
-              child: new InkWell(
-                highlightColor: Colors.grey.withAlpha(30),
-                splashColor: Colors.grey.withAlpha(20),
-                onTap: (() {
-                  this.onTap();
-                }),
+          height: 60.0,
+          child: new Stack(
+            children: [
+              new Material(
+                color: const Color(0x00FFFFFF),
+                child: new InkWell(
+                  highlightColor: Colors.grey.withAlpha(30),
+                  splashColor: Colors.grey.withAlpha(20),
+                  onTap: (() {
+                    this.onTap();
+                  }),
+                ),
               ),
-            ),
-            new Positioned(
-              left: 0.0,
-              top: 0.0,
-              right: 10.0,
-              bottom: 0.0,
-              child: new Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  new Checkbox(
-                    value: checklistItem.isSelected,
-                    onChanged: (bool value) {
-                      onCheckboxChanged(checklistItem, value);
-                    },
-                  ),
-                  new Expanded(
-                    child: new IgnorePointer(
-                      ignoring: true,
-                      child: new Text(
-                        checklistItem.title,
-                        overflow: TextOverflow.ellipsis,
+              new Positioned(
+                left: 0.0,
+                top: 0.0,
+                right: 10.0,
+                bottom: 0.0,
+                child: new Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    new Checkbox(
+                      value: checklistItem.isSelected,
+                      onChanged: (bool value) {
+                        onCheckboxChanged(checklistItem, value);
+                      },
+                    ),
+                    new Expanded(
+                      child: new IgnorePointer(
+                        ignoring: true,
+                        child: new Text(
+                          checklistItem.title,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
 
-    return cellContainer;
   }
 }
 
@@ -111,6 +129,18 @@ class AnimatedChecklist extends Checklist {
       _animatedList.insertItem(items().length);
     } else {
       _animatedList.insertItem(index);
+    }
+  }
+
+  @override
+  void removeItem(ChecklistItem checklistItem) {
+    int removedItemIndex = indexOf(checklistItem);
+    if (removedItemIndex != -1) {
+      removeItemAtIndex(removedItemIndex);
+      _animatedList.removeItem(removedItemIndex, (BuildContext context,
+          Animation<double> animation) {
+        return removedItemBuilder(checklistItem, context, animation);
+      });
     }
   }
 }
@@ -174,6 +204,9 @@ class _PatternsListState extends State<PatternsList>
         setState(() {
           checklistItem.isSelected = value;
         });
+      },
+      onChecklistItemDeletedWithSwipe: (checklistItem) {
+        _checklist.removeItem(checklistItem);
       },
     );
   }
