@@ -5,6 +5,7 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: "^0.2.0"
+  url_launcher: "^0.4.1"
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -44,6 +45,10 @@ flutter:
     - assets/icons/ic_plug_in_photo.png
     - assets/icons/ic_plug_in_service.png
     - assets/icons/ic_search.png
+    - assets/icons/ic_feed_flutter.png
+    - assets/icons/ic_feed_posse.png
+    - assets/icons/ic_feed_settings.png
+    - assets/icons/ic_feed_docs.png
     - assets/images/brand_apple_pie.png
     - assets/images/brand_cinnamon.png
     - assets/images/brand_egg.png
@@ -59,7 +64,7 @@ flutter:
     - assets/images/custom_hero.png
     - assets/images/custom_path.png
     - assets/images/custom_runner_bg.png
-    - assets/images/platform_hero_ios.png
+    - assets/images/platform_hero.png
     - assets/images/platform_hero_android.png
     - assets/images/platform_detail_hero.png
     - assets/images/platform_lamp.png
