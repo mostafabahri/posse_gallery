@@ -131,7 +131,7 @@ class _PatternsListDetailState extends State<PatternsListDetail> {
                 decoration: new InputDecoration(
                   isDense: true,
                   hintText: 'Enter additional details',
-                  hideDivider: true,
+                  border: null,
                 ),
               ),
             ),
