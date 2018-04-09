@@ -46,7 +46,7 @@ matrix:
       before_script:
         - pip2 install six
         - brew update
-        - brew install --HEAD libimobiledevice
+        - brew install libimobiledevice
         - brew install ideviceinstaller
         - brew install ios-deploy
         - ./travis_setup.sh
