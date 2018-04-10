@@ -219,7 +219,7 @@ class _PatternsListState extends State<PatternsList>
                 controller: _controller,
                 decoration: new InputDecoration(
                   hintText: 'Enter your note',
-                  hideDivider: true,
+                  border: null,
                 ),
               ),
             ),
